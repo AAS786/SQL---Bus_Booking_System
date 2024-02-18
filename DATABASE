@@ -1,0 +1,301 @@
+create database Bus_Booking_System;
+use Bus_Booking_System;
+
+## Creation of all Tables ##
+CREATE TABLE User (
+    ID INT PRIMARY KEY,
+    Fullname VARCHAR(255),
+    Contact VARCHAR(15),
+    Email VARCHAR(255),
+    Username VARCHAR(255),
+    Password VARCHAR(255),
+    Category VARCHAR(255),
+    Status VARCHAR(255)
+);
+
+CREATE TABLE Bus (
+    ID INT PRIMARY KEY,
+    Number VARCHAR(255),
+    PlateNumber VARCHAR(20),
+    Type VARCHAR(255),
+    Capacity INT,
+    UserID INT,
+    FOREIGN KEY (UserID) REFERENCES User(ID)
+);
+
+CREATE TABLE TravelSchedule (
+    ID INT PRIMARY KEY,
+    DriverID INT,
+    BusID INT,
+    StartingPoint VARCHAR(255),
+    Destination VARCHAR(255),
+    DepartureTime DATETIME,
+    EstimatedArrivalTime DATETIME,
+    ScheduleDate DATE,
+    FareAmount DECIMAL(10, 2),
+    Remarks VARCHAR(255),
+    UserID INT,
+    FOREIGN KEY (DriverID) REFERENCES Driver(ID),
+    FOREIGN KEY (BusID) REFERENCES Bus(ID),
+    FOREIGN KEY (UserID) REFERENCES User(ID)
+);
+
+CREATE TABLE Driver (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(255),
+    Contact VARCHAR(15),
+    UserID INT,
+    FOREIGN KEY (UserID) REFERENCES User(ID)
+);
+
+CREATE TABLE Booking (
+    ID INT PRIMARY KEY,
+    CustomerID INT,
+    ScheduleID INT,
+    NumberOfSeats INT,
+    FareAmount DECIMAL(10, 2),
+    DateOfBooking DATETIME,
+    TotalAmount DECIMAL(10, 2),
+    Status VARCHAR(255),
+    UserID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(ID),
+    FOREIGN KEY (ScheduleID) REFERENCES TravelSchedule(ID),
+    FOREIGN KEY (UserID) REFERENCES User(ID)
+);
+
+CREATE TABLE Payment (
+    ID INT PRIMARY KEY,
+    BookingID INT,
+    AmountPaid DECIMAL(10, 2),
+    DateOfPayment DATETIME,
+    UserID INT,
+    FOREIGN KEY (BookingID) REFERENCES Booking(ID),
+    FOREIGN KEY (UserID) REFERENCES User(ID)
+);
+
+CREATE TABLE Customer (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(255),
+    Contact VARCHAR(15),
+    Status VARCHAR(255),
+    Email VARCHAR(255),
+    Username VARCHAR(255),
+    Password VARCHAR(255),
+    UserID INT,
+    FOREIGN KEY (UserID) REFERENCES User(ID)
+);
+
+## Inserting all Tables Values ##
+-- Inserting values into the User table
+INSERT INTO User (ID, Fullname, Contact, Email, Username, Password, Category, Status)
+VALUES
+(1, 'John Doe', '1234567890', 'john.doe@example.com', 'john_doe', 'password123', 'Admin', 'Active'),
+(2, 'Jane Smith', '9876543210', 'jane.smith@example.com', 'jane_smith', 'pass456', 'Customer', 'Active'),
+(3, 'Bob Johnson', '5556667777', 'bob.johnson@example.com', 'bob_j', 'secret321', 'Customer', 'Inactive'),
+(4, 'Alice Brown', '1112223333', 'alice.brown@example.com', 'alice_b', 'pass789', 'Admin', 'Active'),
+(5, 'Charlie Davis', '9998887777', 'charlie.davis@example.com', 'charlie_d', 'abc123', 'Customer', 'Active'),
+(6, 'Eva White', '3334445555', 'eva.white@example.com', 'eva_w', 'qwerty', 'Admin', 'Inactive'),
+(7, 'Mike Wilson', '7778889999', 'mike.wilson@example.com', 'mike_w', 'password456', 'Customer', 'Active'),
+(8, 'Sophia Miller', '4445556666', 'sophia.miller@example.com', 'sophia_m', 'p@ssw0rd', 'Customer', 'Inactive'),
+(9, 'Daniel Lee', '6667778888', 'daniel.lee@example.com', 'daniel_l', 'letmein', 'Admin', 'Active'),
+(10, 'Olivia Harris', '2223334444', 'olivia.harris@example.com', 'olivia_h', 'securepass', 'Customer', 'Active');
+
+-- Inserting values into the Bus table
+INSERT INTO Bus (ID, Number, PlateNumber, Type, Capacity, UserID)
+VALUES
+(1, 'BUS001', 'ABC123', 'Sleeper', 40, 1),
+(2, 'BUS002', 'XYZ789', 'Coach', 30, 1),
+(3, 'BUS003', 'DEF456', 'Mini Bus', 20, 2),
+(4, 'BUS004', 'GHI789', 'Double Decker', 50, 3),
+(5, 'BUS005', 'JKL012', 'Standard', 35, 4),
+(6, 'BUS006', 'MNO345', 'Luxury', 25, 5),
+(7, 'BUS007', 'PQR678', 'Sleeper', 40, 6),
+(8, 'BUS008', 'STU901', 'Coach', 30, 7),
+(9, 'BUS009', 'VWX234', 'Mini Bus', 20, 8),
+(10, 'BUS010', 'YZA567', 'Double Decker', 50, 9);
+
+-- Inserting values into the TravelSchedule table
+INSERT INTO TravelSchedule (ID, DriverID, BusID, StartingPoint, Destination, DepartureTime, EstimatedArrivalTime, ScheduleDate, FareAmount, Remarks, UserID)
+VALUES
+(1, 1, 1, 'Mumbai', 'Pune', '2024-02-16 08:00:00', '2024-02-16 11:00:00', '2024-03-01', 150.00, 'Non-stop', 1),
+(2, 2, 2, 'Nashik', 'Aurangabad', '2024-02-17 09:30:00', '2024-02-17 13:30:00', '2024-03-05', 120.00, 'With stops', 1),
+(3, 3, 3, 'Mumbai', 'Kolhapur', '2024-02-18 10:00:00', '2024-02-18 16:00:00', '2024-03-10', 200.00, 'Express Service', 2),
+(4, 4, 4, 'Pune', 'Solapur', '2024-02-19 12:30:00', '2024-02-19 16:30:00', '2024-03-15', 180.00, 'Non-stop', 2),
+(5, 5, 5, 'Aurangabad', 'Nagpur', '2024-02-20 14:00:00', '2024-02-20 19:00:00', '2024-03-20', 250.00, 'Luxury Service', 3),
+(6, 6, 6, 'Mumbai', 'Kolad', '2024-02-21 15:30:00', '2024-02-21 18:30:00', '2024-03-25', 80.00, 'Scenic Route', 3),
+(7, 7, 7, 'Pune', 'Mahabaleshwar', '2024-02-22 17:00:00', '2024-02-22 20:00:00', '2024-03-30', 150.00, 'Hill Station Express', 4),
+(8, 8, 8, 'Nashik', 'Shirdi', '2024-02-23 18:30:00', '2024-02-23 22:30:00', '2024-04-05', 120.00, 'Pilgrimage Special', 4),
+(9, 9, 9, 'Mumbai', 'Alibaug', '2024-02-24 20:00:00', '2024-02-24 21:30:00', '2024-04-10', 60.00, 'Beach Shuttle', 5),
+(10, 10, 10, 'Pune', 'Satara', '2024-02-25 21:30:00', '2024-02-25 23:30:00', '2024-04-15', 100.00, 'Express Route', 5);
+
+
+-- Inserting values into the Driver table
+INSERT INTO Driver (ID, Name, Contact, UserID)
+VALUES
+(1, 'Rajesh Kumar', '1234567890', 1),
+(2, 'Anil Singh', '9876543210', 2),
+(3, 'Prakash Sharma', '5556667777', 3),
+(4, 'Sunil Verma', '1112223333', 4),
+(5, 'Vikram Patel', '9998887777', 5),
+(6, 'Suresh Yadav', '3334445555', 6),
+(7, 'Amit Tiwari', '7778889999', 7),
+(8, 'Rahul Mishra', '4445556666', 8),
+(9, 'Gopal Singh', '6667778888', 9),
+(10, 'Ramesh Joshi', '2223334444', 10);
+
+
+-- Inserting values into the Booking table
+INSERT INTO Booking (ID, CustomerID, ScheduleID, NumberOfSeats, FareAmount, DateOfBooking, TotalAmount, Status, UserID)
+VALUES
+(1, 1, 1, 2, 100.00, '2024-02-18 10:00:00', 100.00, 'Confirmed', 2),
+(2, 2, 2, 3, 120.00, '2024-02-19 12:30:00', 150.00, 'Pending', 1),
+(3, 3, 3, 1, 50.00, '2024-02-20 14:00:00', 50.00, 'Confirmed', 3),
+(4, 4, 4, 4, 180.00, '2024-02-21 15:30:00', 200.00, 'Confirmed', 2),
+(5, 5, 5, 2, 100.00, '2024-02-22 17:00:00', 100.00, 'Pending', 4),
+(6, 6, 6, 3, 120.00, '2024-02-23 18:30:00', 150.00, 'Confirmed', 3),
+(7, 7, 7, 1, 50.00, '2024-02-24 20:00:00', 50.00, 'Confirmed', 5),
+(8, 8, 8, 4, 180.00, '2024-02-25 21:30:00', 200.00, 'Confirmed', 5),
+(9, 9, 9, 2, 100.00, '2024-02-26 23:00:00', 100.00, 'Pending', 6),
+(10, 10, 10, 3, 120.00, '2024-02-27 00:30:00', 150.00, 'Confirmed', 6);
+
+
+-- Inserting values into the Payment table
+INSERT INTO Payment (ID, BookingID, AmountPaid, DateOfPayment, UserID)
+VALUES
+(1, 1, 50.00, '2024-02-18 10:30:00', 2),
+(2, 2, 100.00, '2024-02-19 13:00:00', 1),
+(3, 3, 30.00, '2024-02-20 15:00:00', 3),
+(4, 4, 150.00, '2024-02-21 16:30:00', 2),
+(5, 5, 50.00, '2024-02-22 18:00:00', 4),
+(6, 6, 100.00, '2024-02-23 19:30:00', 3),
+(7, 7, 20.00, '2024-02-24 21:00:00', 5),
+(8, 8, 120.00, '2024-02-25 22:30:00', 5),
+(9, 9, 30.00, '2024-02-26 00:00:00', 6),
+(10, 10, 100.00, '2024-02-27 01:30:00', 6);
+
+-- Inserting values into the Customer table
+INSERT INTO Customer (ID, Name, Contact, Status, Email, Username, Password, UserID)
+VALUES
+(1, 'Amit Kumar', '1234567890', 'Active', 'amit.kumar@example.com', 'amit_k', 'pass123', 1),
+(2, 'Sara Khan', '9876543210', 'Active', 'sara.khan@example.com', 'sara_k', 'abc456', 2),
+(3, 'Rahul Sharma', '5556667777', 'Inactive', 'rahul.sharma@example.com', 'rahul_s', 'qwerty789', 3),
+(4, 'Amit Kumar', '1112223333', 'Active', 'amit.kumar2@example.com', 'amit_k2', 'pass789', 4),
+(5, 'Priya Patel', '9998887777', 'Active', 'priya.patel@example.com', 'priya_p', 'securepass', 5),
+(6, 'Rajesh Yadav', '3334445555', 'Active', 'rajesh.yadav@example.com', 'rajesh_y', 'letmein123', 6),
+(7, 'Sonia Gupta', '7778889999', 'Inactive', 'sonia.gupta@example.com', 'sonia_g', 'p@ssw0rd', 7),
+(8, 'Amit Kumar', '4445556666', 'Active', 'amit.kumar3@example.com', 'amit_k3', 'amit123', 8),
+(9, 'Neha Singh', '6667778888', 'Active', 'neha.singh@example.com', 'neha_s', 'neha456', 9),
+(10, 'Amit Kumar', '2223334444', 'Inactive', 'amit.kumar4@example.com', 'amit_k4', 'amit789', 10);
+
+Select * from User;
+Select * from Bus;
+Select * from TravelSchedule;
+Select * from Driver;
+Select * from Booking;
+Select * from Payment;
+Select * from Customer;
+
+desc User;
+desc Bus;
+desc TravelSchedule;
+desc Driver;
+desc Booking;
+desc Payment;
+desc Customer;
+
+# 1) Retrieve the names of all drivers along with their contact numbers.
+SELECT Name, Contact FROM Driver;
+
+# 2) Find the total number of buses of each type.
+SELECT Type, COUNT(*) AS TotalBuses
+FROM Bus
+GROUP BY Type;
+
+# 3) Display the travel schedules where the fare amount is greater than 150.
+SELECT *
+FROM TravelSchedule
+WHERE FareAmount > 150;
+
+# 4)  List the customers who have booked more than 2 seats.
+SELECT c.Name, b.NumberOfSeats
+FROM Customer c
+JOIN Booking b ON c.ID = b.CustomerID
+WHERE b.NumberOfSeats > 2;
+
+# 5) Show the total amount received through payments on a specific date.
+SELECT DateOfPayment, SUM(AmountPaid) AS TotalAmount
+FROM Payment
+GROUP BY DateOfPayment;
+
+# 6) Retrieve the schedule details along with the driver's name for a specific starting point.
+SELECT ts.*, d.Name AS DriverName
+FROM TravelSchedule ts
+JOIN Driver d ON ts.DriverID = d.ID
+WHERE ts.StartingPoint = 'Mumbai';
+
+#7) List the bookings with their corresponding customers and the status of the booking.
+SELECT b.ID AS BookingID, c.Name AS CustomerName, b.Status
+FROM Booking b
+JOIN Customer c ON b.CustomerID = c.ID;
+
+# 8) Find the average capacity of all bus types.
+SELECT Type, AVG(Capacity) AS AvgCapacity
+FROM Bus
+GROUP BY Type;
+
+# 9) Display the travel schedules where the departure date and time is later than 2:00 PM.
+SELECT *
+FROM TravelSchedule
+WHERE DepartureTime > '2024-02-20 14:00:00';
+
+# 10) Retrieve the total number of bookings made by each customer.
+SELECT c.Name, COUNT(b.ID) AS TotalBookings
+FROM Customer c
+LEFT JOIN Booking b ON c.ID = b.CustomerID
+GROUP BY c.ID;
+
+## Joins ##
+# 1) List all users along with their corresponding bus information, if available.
+SELECT User.*, Bus.*
+FROM User
+LEFT JOIN Bus ON User.ID = Bus.UserID;
+
+# 2) Show the travel schedules along with the driver details for each schedule. 
+# If a driver is not assigned, display the schedule without the driver information.
+SELECT TravelSchedule.*, Driver.*
+FROM TravelSchedule
+LEFT JOIN Driver ON TravelSchedule.DriverID = Driver.ID;
+
+# 3) Display all bookings with customer information and the associated schedule details. 
+# Include bookings even if no customer is assigned.
+SELECT Booking.*, Customer.*, TravelSchedule.*
+FROM Booking
+LEFT JOIN Customer ON Booking.CustomerID = Customer.ID
+INNER JOIN TravelSchedule ON Booking.ScheduleID = TravelSchedule.ID;
+
+# 4) List all payments along with the booking details and associated customer information. 
+# Include payments even if no booking is made.
+SELECT Payment.*, Booking.*, Customer.*
+FROM Payment
+RIGHT JOIN Booking ON Payment.BookingID = Booking.ID
+LEFT JOIN Customer ON Booking.CustomerID = Customer.ID;
+
+# 5) Show the drivers and their assigned buses, if available. Include drivers even if no bus is assigned.
+SELECT Driver.*, Bus.*
+FROM Driver
+LEFT JOIN Bus ON Driver.UserID = Bus.UserID limit 3;
+
+# 6) Display all customers and their booking information. Include customers even if no booking is made.
+SELECT Customer.*, Booking.*
+FROM Customer
+LEFT JOIN Booking ON Customer.ID = Booking.CustomerID limit 5;
+
+# 7) List the buses, along with their assigned drivers and travel schedule details. 
+# Include buses even if no driver or schedule is assigned.
+SELECT Bus.*, Driver.*, TravelSchedule.*
+FROM Bus
+LEFT JOIN Driver ON Bus.UserID = Driver.UserID
+LEFT JOIN TravelSchedule ON Bus.ID = TravelSchedule.BusID limit 4;
+
+
+
