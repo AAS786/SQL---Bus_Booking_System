@@ -1,0 +1,95 @@
+All type of Question and there query solutions
+
+# 1) Retrieve the names of all drivers along with their contact numbers.
+SELECT Name, Contact FROM Driver;
+
+# 2) Find the total number of buses of each type.
+SELECT Type, COUNT(*) AS TotalBuses
+FROM Bus
+GROUP BY Type;
+
+# 3) Display the travel schedules where the fare amount is greater than 150.
+SELECT *
+FROM TravelSchedule
+WHERE FareAmount > 150;
+
+# 4)  List the customers who have booked more than 2 seats.
+SELECT c.Name, b.NumberOfSeats
+FROM Customer c
+JOIN Booking b ON c.ID = b.CustomerID
+WHERE b.NumberOfSeats > 2;
+
+# 5) Show the total amount received through payments on a specific date.
+SELECT DateOfPayment, SUM(AmountPaid) AS TotalAmount
+FROM Payment
+GROUP BY DateOfPayment;
+
+# 6) Retrieve the schedule details along with the driver's name for a specific starting point.
+SELECT ts.*, d.Name AS DriverName
+FROM TravelSchedule ts
+JOIN Driver d ON ts.DriverID = d.ID
+WHERE ts.StartingPoint = 'Mumbai';
+
+#7) List the bookings with their corresponding customers and the status of the booking.
+SELECT b.ID AS BookingID, c.Name AS CustomerName, b.Status
+FROM Booking b
+JOIN Customer c ON b.CustomerID = c.ID;
+
+# 8) Find the average capacity of all bus types.
+SELECT Type, AVG(Capacity) AS AvgCapacity
+FROM Bus
+GROUP BY Type;
+
+# 9) Display the travel schedules where the departure date and time is later than 2:00 PM.
+SELECT *
+FROM TravelSchedule
+WHERE DepartureTime > '2024-02-20 14:00:00';
+
+# 10) Retrieve the total number of bookings made by each customer.
+SELECT c.Name, COUNT(b.ID) AS TotalBookings
+FROM Customer c
+LEFT JOIN Booking b ON c.ID = b.CustomerID
+GROUP BY c.ID;
+
+## Joins ##
+# 1) List all users along with their corresponding bus information, if available.
+SELECT User.*, Bus.*
+FROM User
+LEFT JOIN Bus ON User.ID = Bus.UserID;
+
+# 2) Show the travel schedules along with the driver details for each schedule. 
+# If a driver is not assigned, display the schedule without the driver information.
+SELECT TravelSchedule.*, Driver.*
+FROM TravelSchedule
+LEFT JOIN Driver ON TravelSchedule.DriverID = Driver.ID;
+
+# 3) Display all bookings with customer information and the associated schedule details. 
+# Include bookings even if no customer is assigned.
+SELECT Booking.*, Customer.*, TravelSchedule.*
+FROM Booking
+LEFT JOIN Customer ON Booking.CustomerID = Customer.ID
+INNER JOIN TravelSchedule ON Booking.ScheduleID = TravelSchedule.ID;
+
+# 4) List all payments along with the booking details and associated customer information. 
+# Include payments even if no booking is made.
+SELECT Payment.*, Booking.*, Customer.*
+FROM Payment
+RIGHT JOIN Booking ON Payment.BookingID = Booking.ID
+LEFT JOIN Customer ON Booking.CustomerID = Customer.ID;
+
+# 5) Show the drivers and their assigned buses, if available. Include drivers even if no bus is assigned.
+SELECT Driver.*, Bus.*
+FROM Driver
+LEFT JOIN Bus ON Driver.UserID = Bus.UserID limit 3;
+
+# 6) Display all customers and their booking information. Include customers even if no booking is made.
+SELECT Customer.*, Booking.*
+FROM Customer
+LEFT JOIN Booking ON Customer.ID = Booking.CustomerID limit 5;
+
+# 7) List the buses, along with their assigned drivers and travel schedule details. 
+# Include buses even if no driver or schedule is assigned.
+SELECT Bus.*, Driver.*, TravelSchedule.*
+FROM Bus
+LEFT JOIN Driver ON Bus.UserID = Driver.UserID
+LEFT JOIN TravelSchedule ON Bus.ID = TravelSchedule.BusID limit 4;
