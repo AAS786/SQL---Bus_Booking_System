@@ -1,0 +1,15 @@
+Select * from User;
+Select * from Bus;
+Select * from TravelSchedule;
+Select * from Driver;
+Select * from Booking;
+Select * from Payment;
+Select * from Customer;
+
+desc User;
+desc Bus;
+desc TravelSchedule;
+desc Driver;
+desc Booking;
+desc Payment;
+desc Customer;
